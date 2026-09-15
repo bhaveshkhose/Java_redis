@@ -30,10 +30,19 @@ public class RedisServer {
 
 
                 String command ;
+                PrintWriter printWriter = new PrintWriter(
+                        socket.getOutputStream(),
+                        true
+                );
 
                 while((command = bufferedReader.readLine()) != null){
-                    System.out.println("Command Received "+command);
+                    System.out.println("Command Received :- "+command);
+                    printWriter.println("OK");
                 }
+
+
+
+
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
