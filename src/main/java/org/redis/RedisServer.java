@@ -14,6 +14,9 @@ public class RedisServer {
 
     public static  void main(String[] args){
 
+        RedisStore redisStore = new RedisStore();
+        CommandExecutor commandExecutor = new CommandExecutor(redisStore);
+
         try(ServerSocket serverSocket = new ServerSocket(port)) {
 
             System.out.println("java Redis server on port "+port);
@@ -37,11 +40,9 @@ public class RedisServer {
 
                 while((command = bufferedReader.readLine()) != null){
                     System.out.println("Command Received :- "+command);
-                    printWriter.println("OK");
+
+                    printWriter.println(commandExecutor.execute(command));
                 }
-
-
-
 
             }
         } catch (IOException e) {

@@ -5,8 +5,7 @@ import java.util.Map;
 
 public class RedisStore {
 
-    private final Map<String , String> data = new HashMap<>();
-
+    private final static Map<String , String> data = new HashMap<>();
 
     public String set(String key , String value){
         return data.put(key , value);
@@ -22,5 +21,10 @@ public class RedisStore {
 
     public boolean delete(String key){
         return data.remove(key) != null ;
+    }
+
+
+    public static void main(String[] b ){
+        System.out.println(data.get("name"));
     }
 }
