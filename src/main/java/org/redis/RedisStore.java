@@ -24,7 +24,7 @@ public class RedisStore {
     }
 
 
-    public static void main(String[] b ){
-        System.out.println(data.get("name"));
+    public void printdata(){
+        System.out.println(data);
     }
 }

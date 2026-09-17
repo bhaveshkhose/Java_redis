@@ -11,25 +11,57 @@ public class CommandExecutor {
     public String execute(String command){
         String[] parts = command.trim().split("\\s+");
 
-        if(parts[0].isEmpty()){
-            return "Error Empty Command";
+        if (parts.length == 0 || parts[0].isEmpty()) {
+            return "ERR empty command";
         }
+
         String operation = parts[0].toLowerCase();
 
-        if(operation.equalsIgnoreCase("set")){
-            if(parts.length != 3){
-                return "Error ! wrong number of arguments";
-            }
+        switch (operation) {
 
-            String key = parts[1];
-            String value = parts[2];
+            case "set":
+                if (parts.length != 3) {
+                    return "ERR wrong number of arguments";
+                }
 
-            redisStore.set(key , value);
+                String key = parts[1];
+                String value = parts[2];
 
-            return "OK";
+                redisStore.set(key, value);
+
+                redisStore.printdata();
+
+                return "OK";
+
+            case "get":
+                if (parts.length != 2) {
+                    return "ERR wrong number of arguments";
+                }
+
+                return redisStore.get(parts[1]);
+
+            case "del":
+                if (parts.length != 2) {
+                    return "ERR wrong number of arguments";
+                }
+
+                redisStore.delete(parts[1]);
+
+                return "OK";
+
+            case "exists":
+                if(parts.length != 2){
+                    return "Err wrong number of arguments";
+                }
+
+                redisStore.exists(parts[1]);
+
+                return "OK";
+
+
+            default:
+                return "ERR unknown command";
         }
-
-        return "ERR unknown command";
     }
 
 }
