@@ -2,16 +2,18 @@ package org.redis;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class RedisStore {
 
-    private final static Map<String , String> data = new HashMap<>();
+    private final static Map<String , Object> data = new ConcurrentHashMap<>();
 
-    public String set(String key , String value){
+    public Object set(String key , String value){
         return data.put(key , value);
     }
 
-    public String get(String key){
+    public Object get(String key){
         return data.get(key);
     }
 
@@ -27,4 +29,5 @@ public class RedisStore {
     public void printdata(){
         System.out.println(data);
     }
+
 }

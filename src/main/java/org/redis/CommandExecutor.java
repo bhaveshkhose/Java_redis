@@ -2,66 +2,91 @@ package org.redis;
 
 public class CommandExecutor {
 
-    private final RedisStore redisStore ;
+    private final RedisStore store;
 
-    public CommandExecutor(RedisStore redisStore){
-        this.redisStore = redisStore;
+    public CommandExecutor(RedisStore store) {
+        this.store = store;
     }
 
-    public String execute(String command){
+    public String handle(String command) {
+
         String[] parts = command.trim().split("\\s+");
 
-        if (parts.length == 0 || parts[0].isEmpty()) {
-            return "ERR empty command";
+        if (parts.length == 0) {
+            return "-ERR empty command\r\n";
         }
 
-        String operation = parts[0].toLowerCase();
+        String operation = parts[0].toUpperCase();
 
         switch (operation) {
 
-            case "set":
-                if (parts.length != 3) {
-                    return "ERR wrong number of arguments";
-                }
+            case "SET":
+                return handleSet(parts);
 
-                String key = parts[1];
-                String value = parts[2];
+            case "GET":
+                return handleGet(parts);
 
-                redisStore.set(key, value);
+            case "EXISTS":
+                return handleExists(parts);
 
-                redisStore.printdata();
-
-                return "OK";
-
-            case "get":
-                if (parts.length != 2) {
-                    return "ERR wrong number of arguments";
-                }
-
-                return redisStore.get(parts[1]);
-
-            case "del":
-                if (parts.length != 2) {
-                    return "ERR wrong number of arguments";
-                }
-
-                redisStore.delete(parts[1]);
-
-                return "OK";
-
-            case "exists":
-                if(parts.length != 2){
-                    return "Err wrong number of arguments";
-                }
-
-                redisStore.exists(parts[1]);
-
-                return "OK";
-
+            case "DEL":
+                return handleDelete(parts);
 
             default:
-                return "ERR unknown command";
+                return "-ERR unknown command\r\n";
         }
     }
 
+    private String handleSet(String[] parts) {
+
+        if (parts.length != 3) {
+            return "-ERR wrong number of arguments\r\n";
+        }
+
+        store.set(parts[1], parts[2]);
+
+        return "+OK\r\n";
+    }
+
+    private String handleGet(String[] parts) {
+
+        if (parts.length != 2) {
+            return "-ERR wrong number of arguments\r\n";
+        }
+
+        Object value = store.get(parts[1]);
+
+        if (value == null) {
+            return "$-1\r\n";
+        }
+
+        String str = value.toString();
+
+        return "$" + str.length() +
+                "\r\n" +
+                str +
+                "\r\n";
+    }
+
+    private String handleExists(String[] parts) {
+
+        if (parts.length != 2) {
+            return "-ERR wrong number of arguments\r\n";
+        }
+
+        return store.exists(parts[1]) ? ":1\r\n" : ":0\r\n";
+    }
+
+    private String handleDelete(String[] parts) {
+
+        if (parts.length != 2) {
+            return "-ERR wrong number of arguments\r\n";
+        }
+
+        boolean exists = store.exists(parts[1]);
+
+        store.delete(parts[1]);
+
+        return exists ? ":1\r\n" : ":0\r\n";
+    }
 }
