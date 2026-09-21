@@ -10,11 +10,11 @@ public class CommandExecutor {
 
     public String handle(String command) {
 
-        String[] parts = command.trim().split("\\s+");
-
-        if (parts.length == 0) {
+        if (command == null || command.trim().isEmpty()) {
             return "-ERR empty command\r\n";
         }
+
+        String[] parts = command.trim().split("\\s+", 3);
 
         String operation = parts[0].toUpperCase();
 
@@ -40,7 +40,7 @@ public class CommandExecutor {
     private String handleSet(String[] parts) {
 
         if (parts.length != 3) {
-            return "-ERR wrong number of arguments\r\n";
+            return "-ERR wrong number of arguments for 'set' command\r\n";
         }
 
         store.set(parts[1], parts[2]);
@@ -51,7 +51,7 @@ public class CommandExecutor {
     private String handleGet(String[] parts) {
 
         if (parts.length != 2) {
-            return "-ERR wrong number of arguments\r\n";
+            return "-ERR wrong number of arguments for 'get' command\r\n";
         }
 
         Object value = store.get(parts[1]);
@@ -71,7 +71,7 @@ public class CommandExecutor {
     private String handleExists(String[] parts) {
 
         if (parts.length != 2) {
-            return "-ERR wrong number of arguments\r\n";
+            return "-ERR wrong number of arguments for 'exists' command\r\n";
         }
 
         return store.exists(parts[1]) ? ":1\r\n" : ":0\r\n";
@@ -80,7 +80,7 @@ public class CommandExecutor {
     private String handleDelete(String[] parts) {
 
         if (parts.length != 2) {
-            return "-ERR wrong number of arguments\r\n";
+            return "-ERR wrong number of arguments for 'del' command\r\n";
         }
 
         boolean exists = store.exists(parts[1]);

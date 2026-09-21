@@ -1,54 +1,32 @@
 package org.redis;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 public class RedisServer {
 
-    static int port = 6379 ;
+    static int port = 6379;
 
-
-    public static  void main(String[] args){
+    public static void main(String[] args) {
 
         RedisStore redisStore = new RedisStore();
         CommandExecutor commandExecutor = new CommandExecutor(redisStore);
 
-        try(ServerSocket serverSocket = new ServerSocket(port)) {
+        try (ServerSocket serverSocket = new ServerSocket(port)) {
 
-            System.out.println("java Redis server on port "+port);
+            System.out.println("Java Redis server running on port " + port);
 
-            while(true){
+            while (true) {
                 Socket socket = serverSocket.accept();
-                System.out.println("Client connected "+socket.getInetAddress());
+                System.out.println("Client connected: " + socket.getInetAddress());
 
-                BufferedReader bufferedReader = new BufferedReader(
-                        new InputStreamReader(
-                                socket.getInputStream()
-                        )
-                );
-
-
-                String command ;
-                PrintWriter printWriter = new PrintWriter(
-                        socket.getOutputStream(),
-                        true
-                );
-
-                while((command = bufferedReader.readLine()) != null){
-                    System.out.println("Command Received :- "+command);
-
-                    printWriter.println(commandExecutor.execute(command));
-                }
-
+                ClientHandler clientHandler = new ClientHandler(socket, commandExecutor);
+                new Thread(clientHandler).start();
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.err.println("Server exception: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }
-
-
