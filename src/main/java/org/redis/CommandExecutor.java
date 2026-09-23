@@ -45,6 +45,8 @@ public class CommandExecutor {
 
         store.set(parts[1], parts[2]);
 
+        store.printData();
+
         return "+OK\r\n";
     }
 
