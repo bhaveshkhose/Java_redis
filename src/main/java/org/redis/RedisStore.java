@@ -5,6 +5,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class RedisStore {
 
+    private record DataEntry(Object value , Long expiredAt){
+
+        boolean isExpired(){
+            return expiredAt != null && System.currentTimeMillis() > expiredAt;
+        }
+    }
+
     private final Map<String, Object> data =
             new ConcurrentHashMap<>();
 

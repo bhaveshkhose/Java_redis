@@ -3,6 +3,8 @@ package org.redis;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class RedisServer {
 
@@ -13,7 +15,8 @@ public class RedisServer {
         RedisStore redisStore = new RedisStore();
         CommandExecutor commandExecutor = new CommandExecutor(redisStore);
 
-        try (ServerSocket serverSocket = new ServerSocket(port)) {
+        try (ExecutorService executorService = Executors.newVirtualThreadPerTaskExecutor();
+                ServerSocket serverSocket = new ServerSocket(port)) {
 
             System.out.println("Java Redis server running on port " + port);
 
