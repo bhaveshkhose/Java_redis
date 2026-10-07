@@ -25,7 +25,7 @@ public class RedisServer {
                 System.out.println("Client connected: " + socket.getInetAddress());
 
                 ClientHandler clientHandler = new ClientHandler(socket, commandExecutor);
-                new Thread(clientHandler).start();
+                executorService.submit(clientHandler);
             }
         } catch (IOException e) {
             System.err.println("Server exception: " + e.getMessage());
