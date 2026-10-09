@@ -40,15 +40,19 @@ public class CommandExecutor {
                 return handleEcho(tokens);
 
             case "SET":
+                store.printData();
                 return handleSet(tokens);
 
             case "GET":
+                store.printData();
                 return handleGet(tokens);
 
             case "EXISTS":
+                store.printData();
                 return handleExists(tokens);
 
             case "DEL":
+                store.printData();
                 return handleDelete(tokens);
 
             default:
